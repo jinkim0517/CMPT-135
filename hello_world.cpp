@@ -16,4 +16,9 @@ int main() {
     }
 
     cout << "That is pretty old!\n";
+
+    string a;
+    cout << "What is dn???\n";
+    cin >> a;
+    cout << "shut up bum\n";
 }
