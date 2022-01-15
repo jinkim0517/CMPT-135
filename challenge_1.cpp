@@ -41,16 +41,20 @@ int main() {
 	if(infile.is_open()){
 		while (!infile.eof()){
 			getline(infile, num);
-			lines.push_back(stoi(num));
+
+			int deez = stoi(num);
+			
+			if(three_check(deez)){
+				lines.push_back(deez);
 		}
 		infile.close();
-	}
-
-	for(int i = 0; i <= lines.size(); i++){
-		if(three_check(lines[i])){
-			sum += lines[i];
 		}
 	}
+
+	for(int i = 0; i <= 5; i++){
+		sum += lines[i];
+	}
+		//cout << lines[i] << "	";
 
 	cout << "The sum of all numbers with the digit 3 is: " << sum;
 	return 0;
