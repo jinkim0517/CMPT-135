@@ -16,16 +16,27 @@
 
 using namespace std;
 
-//
 // ... add any helper functions (write them yourself!) here ...
-//
+bool three_check(int num){
+	bool result = false;
+	while(num != 0){
+		if(num % 10 == 3){
+			result = true;
+		}
+		else{
+			num = num / 10;
+		}
+	}
+	return result;
+}
 
 int main() {
 	cout << "Challenge 1 ...\n";
 
-	ifstream infile("numbers.txt");
+	ifstream infile("numbers1.txt");
 	vector<int> lines;
-	string num = 0;
+	string num;
+	int sum = 0;
 
 	if(infile.is_open()){
 		while (!infile.eof()){
@@ -35,9 +46,13 @@ int main() {
 		infile.close();
 	}
 
-	for(int i = 0; i < lines.size(); i++){
-		cout << lines[i] << endl;
+	for(int i = 0; i <= lines.size(); i++){
+		if(three_check(lines[i])){
+			sum += lines[i];
+		}
 	}
+
+	cout << "The sum of all numbers with the digit 3 is: " << sum;
 	return 0;
 	// ...
 	// get each line and put them in a vector
