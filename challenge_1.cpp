@@ -18,16 +18,15 @@ using namespace std;
 
 // ... add any helper functions (write them yourself!) here ...
 bool three_check(int num){
-	bool result = false;
 	while(num != 0){
 		if(num % 10 == 3){
-			result = true;
+			return true;
 		}
 		else{
 			num = num / 10;
 		}
 	}
-	return result;
+	return false;
 }
 
 int main() {
@@ -41,20 +40,23 @@ int main() {
 	if(infile.is_open()){
 		while (!infile.eof()){
 			getline(infile, num);
-
-			int deez = stoi(num);
+			int formatted_num = stoi(num);
 			
-			if(three_check(deez)){
-				lines.push_back(deez);
+			if(formatted_num < 0){
+				formatted_num *= -1;
+			}
+
+			if(three_check(formatted_num)){
+				lines.push_back(formatted_num);
+			}
 		}
 		infile.close();
-		}
 	}
 
-	for(int i = 0; i <= 5; i++){
+	for(int i = 0; i <= lines.size(); i++){
 		sum += lines[i];
-	}
 		//cout << lines[i] << "	";
+	}
 
 	cout << "The sum of all numbers with the digit 3 is: " << sum;
 	return 0;
