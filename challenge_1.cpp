@@ -17,12 +17,16 @@
 using namespace std;
 
 // ... add any helper functions (write them yourself!) here ...
+
+// Checks if there is a 3 in any of the digit places
 bool three_check(int num){
 	while(num != 0){
+		// Checks if one's place is a 3
 		if(num % 10 == 3){
 			return true;
 		}
 		else{
+			// Moves on to next place value
 			num = num / 10;
 		}
 	}
@@ -32,6 +36,7 @@ bool three_check(int num){
 int main() {
 	cout << "Challenge 1 ...\n";
 
+	// Creates ifstream object
 	ifstream infile("numbers1.txt");
 	vector<int> lines;
 	string num;
@@ -39,6 +44,7 @@ int main() {
 
 	if(infile.is_open()){
 		while (!infile.eof()){
+			// Reads in each line and formats the string to and integer
 			getline(infile, num);
 			int formatted_num = stoi(num);
 			
@@ -46,6 +52,7 @@ int main() {
 				formatted_num *= -1;
 			}
 
+			// Checks if there is a 3 and pushes into vector if true
 			if(three_check(formatted_num)){
 				lines.push_back(formatted_num);
 			}
@@ -54,11 +61,11 @@ int main() {
 	}
 
 	for(int i = 0; i <= lines.size(); i++){
+		// Adds up all values in vector
 		sum += lines[i];
-		//cout << lines[i] << "	";
 	}
 
-	cout << "The sum of all numbers with the digit 3 is: " << sum;
+	cout << "The sum of all numbers without the digit 3 is: " << sum;
 	return 0;
 	// ...
 	// get each line and put them in a vector
