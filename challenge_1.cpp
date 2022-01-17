@@ -47,20 +47,19 @@ int main() {
 	int sum = 0;
 
 	if(infile.is_open()){
-		while (!infile.eof()){
+		while (getline(infile, num)){
 			// Reads in each line and formats the string to and integer
-			getline(infile, num);
 			int formatted_num = stoi(num);
 
 			// Checks if there is a 3 and pushes into vector if true
-			if(three_check(formatted_num)){
+			if(!three_check(formatted_num)){
 				lines.push_back(formatted_num);
 			}
 		}
 		infile.close();
 	}
 
-	for(int i = 0; i <= lines.size(); i++){
+	for(int i = 0; i <= lines.size() - 1; i++){
 		// Adds up all values in vector
 		sum += lines[i];
 	}
