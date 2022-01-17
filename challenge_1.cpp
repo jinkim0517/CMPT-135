@@ -20,6 +20,10 @@ using namespace std;
 
 // Checks if there is a 3 in any of the digit places
 bool three_check(int num){
+	// Gives the absolute value of the number
+	if(num < 0){
+		num *= -1;
+	}
 	while(num != 0){
 		// Checks if one's place is a 3
 		if(num % 10 == 3){
@@ -47,10 +51,6 @@ int main() {
 			// Reads in each line and formats the string to and integer
 			getline(infile, num);
 			int formatted_num = stoi(num);
-			
-			if(formatted_num < 0){
-				formatted_num *= -1;
-			}
 
 			// Checks if there is a 3 and pushes into vector if true
 			if(three_check(formatted_num)){
