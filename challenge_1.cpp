@@ -19,17 +19,17 @@ using namespace std;
 // ... add any helper functions (write them yourself!) here ...
 
 // Checks if there is a 3 in any of the digit places
-bool three_check(int num){
+bool three_check(int num) {
 	// Gives the absolute value of the number
-	if(num < 0){
+	if(num < 0) {
 		num *= -1;
 	}
-	while(num != 0){
+	while(num != 0) {
 		// Checks if one's place is a 3
-		if(num % 10 == 3){
+		if(num % 10 == 3) {
 			return true;
 		}
-		else{
+		else {
 			// Moves on to next place value
 			num = num / 10;
 		}
@@ -46,20 +46,20 @@ int main() {
 	string num;
 	int sum = 0;
 
-	if(infile.is_open()){
-		while (getline(infile, num)){
+	if(infile.is_open()) {
+		while (getline(infile, num)) {
 			// Reads in each line and formats the string to and integer
 			int formatted_num = stoi(num);
 
-			// Checks if there is a 3 and pushes into vector if true
-			if(!three_check(formatted_num)){
+			// Checks if there is a 3 and pushes into vector if false
+			if(!three_check(formatted_num)) {
 				lines.push_back(formatted_num);
 			}
 		}
 		infile.close();
 	}
 
-	for(int i = 0; i <= lines.size() - 1; i++){
+	for(int i = 0; i <= lines.size() - 1; i++) {
 		// Adds up all values in vector
 		sum += lines[i];
 	}
