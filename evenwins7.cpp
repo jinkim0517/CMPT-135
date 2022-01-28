@@ -1,4 +1,25 @@
 // evenwins.cpp
+/////////////////////////////////////////////////////////////////////////
+//
+// Student Info
+// ------------
+//
+// Name : Jinsung Kim
+// St.# : 301539203
+// Email: jka287@sfu.ca
+//
+//
+// Statement of Originality
+// ------------------------
+//
+// All the code and comments below are my own original work. For any non-
+// original work, I have provided citations in the comments with enough detail
+// so that someone can see the exact source and extent of the borrowed work.
+//
+// In addition, I have not shared this work with anyone else, and I have not
+// seen solutions from other students, tutors, websites, books, etc.
+//
+/////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
 #include <string>
@@ -120,91 +141,106 @@ void human_turn(Gamestate &variables) {
         variables.human_marbles += n;
 
         return;
-    } // for
+    }
 } // human_turn
 
 int mirror_play(int max_choice, Gamestate &variables){
-    int roll = rand() % (max_choice + 1);
-    while (roll == 0){
-        roll = rand() % (max_choice + 1);
+    int computer_take = rand() % (max_choice + 1);
+    while (computer_take == 0){
+        computer_take = rand() % (max_choice + 1);
     }
-    if (variables.human_take % 2 == 0){
-        while ((roll % 2) != 0) {
-            roll = rand() % (max_choice + 1);
-            while (roll == 0){
-                roll = rand() % (max_choice + 1);
-            }
-        }
-    }
-    else {
-        while ((roll % 2) == 0) {
-            roll = rand() % (max_choice + 1);
-            while (roll == 0){
-                roll = rand() % (max_choice + 1);
-            }
-        }
-    }
-    return roll;
-}
 
-/* My strategy to improving the computer's playstyle was to mirror what the player's take value's type, which means
-taking an even number of marbles when the player takes even, and an odd number of marbles when the player takes odd. This
-results in the first turn deciding the course of the game. The first turn directly relates to that last few turns when the number
-of marbles is less than or equal to 3, because whoever goes first gains the last turn to either take the single last marble or decide
-to take 1 or 2, which can change their number of marbles to even or odd. My implementation is somewhat perfect, because it indeed wins
-whenever it can through a single turn perspective, but it cannot think further and calculate 1 step ahead.
+    // If the player takes and even number of marbles, take an even number
+    if (variables.human_take % 2 == 0){
+        while ((computer_take % 2) != 0) {
+            computer_take = rand() % (max_choice + 1);
+            while (computer_take == 0){
+                computer_take = rand() % (max_choice + 1);
+            }
+        }
+    }
+    // If the player takes and odd number of marbles, take an odd number
+    else {
+        while ((computer_take % 2) == 0) {
+            computer_take = rand() % (max_choice + 1);
+            while (computer_take == 0){
+                computer_take = rand() % (max_choice + 1);
+            }
+        }
+    }
+    return computer_take;
+} // mirror_play
+
+/* 
+My strategy to improving the computer's playstyle was to mirror what the player's take value's 
+type, which means taking an even number of marbles when the player takes even, and an odd number 
+of marbles when the player takes odd. This results in the first turn deciding the course of the game. 
+The first turn directly relates to that last few turns when the number of marbles is less than or equal 
+to 5, because whoever goes first gains the last turn to either take the single last marble or decide
+to take a values from 1 to 4, which can change their number of marbles to even or odd. In addition,
+the computer picks the opposite type of value compared to the player's take so that the two hands have 
+opposite type of value throughout the game. My implementation is perfect because the "computer_turn" 
+function accounts for every possible winning play when there are 5 or less marbles, and chooses the 
+appropriate one.
 */
 void computer_turn(Gamestate &variables) {
     cout << "It's the computer's turn ...\n";
     int max_choice = min(4, variables.marbles_in_middle);
-    int roll = rand() % (max_choice + 1);
+    int computer_take = rand() % (max_choice + 1);
 
-    while (roll == 0){
-        roll = rand() % (max_choice + 1);
+    while (computer_take == 0){
+        computer_take = rand() % (max_choice + 1);
     }
 
     // If player goes first, pick the opposite type of integer than what they picked
+    // so that the winning choices during last turns will be easier to program
     //(human: picks even    computer: picks odd)
 
     if (variables.first_turn == true) {
-       if (variables.human_take % 2 == 0){
-            while ((roll % 2) == 0 ) {
-                roll = rand() % (max_choice + 1);
-                while (roll == 0){
-                    roll = rand() % (max_choice + 1);
+        // If the player takes and even number of marbles, take an odd number
+        if (variables.human_take % 2 == 0){
+            while ((computer_take % 2) == 0 ) {
+                computer_take = rand() % (max_choice + 1);
+                while (computer_take == 0){
+                    computer_take = rand() % (max_choice + 1);
                 }
             }
         }
         else {
-            while ((roll % 2) != 0) {
-                roll = rand() % (max_choice + 1);
-                while (roll == 0){
-                    roll = rand() % (max_choice + 1);
+            // If the player takes an odd number of marbles, take an even number
+            while ((computer_take % 2) != 0) {
+                computer_take = rand() % (max_choice + 1);
+                while (computer_take == 0){
+                    computer_take = rand() % (max_choice + 1);
                 }
             }
         }
         variables.first_turn = false;
     }
-    else if (variables.marbles_in_middle > 3){
+    else if (variables.marbles_in_middle > 5){
         // Mirrors the player by taking the same type of integer of what player picked
-        roll = mirror_play(max_choice, variables);
+        computer_take = mirror_play(max_choice, variables);
     }
     else {
-        // When there are 3 or less marbles, take the amount that wins you the game
-        if (variables.computer_marbles % 2 == 0) {
-            roll = 2;
+        // Take the maximum number of marbles that wins you the game
+        if (variables.marbles_in_middle > 3 && variables.computer_marbles % 2 == 0) {
+            computer_take = 4;
         }
-        else if (variables.marbles_in_middle == 3) {
-            roll = 3;
+        // When there are 3 or less marbles, take the amount that wins you the game
+        else if (variables.computer_marbles % 2 != 0 && variables.marbles_in_middle >= 3) {
+            computer_take = 3;
+        }
+        else if (variables.computer_marbles % 2 == 0 && variables.marbles_in_middle >= 2){
+            computer_take = 2;
         }
         else {
-            roll = 1;
+            computer_take = 1;
         }
     }
-    cout << "Computer takes " << marbles_str(roll) << " ...\n";
-    variables.marbles_in_middle -= roll;
-    variables.computer_marbles += roll;
-}
+    cout << "Computer takes " << marbles_str(computer_take) << " ...\n";
+    variables.marbles_in_middle -= computer_take;
+    variables.computer_marbles += computer_take;
+} // computer_turn
 
 void game_over(Gamestate &variables) {
     string taunts[] = {
@@ -218,11 +254,14 @@ void game_over(Gamestate &variables) {
     cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
          << "!! All the marbles are taken: Game Over !!\n"
          << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
+
     print_board(variables);
+
     if (variables.human_marbles % 2 == 0) {
         cout << "You are the winner! Congratulations!\n";
         variables.player_wins++;
     } else {
+        // Chooses random taunt
         cout << taunts[rand() % 5];
         variables.computer_wins++;
     }
@@ -248,7 +287,7 @@ void play_game(Gamestate &variables) {
             print_board(variables);
             next_player(variables);
         }
-    } // for
+    }
 } // play_game
 
 int main() {
@@ -272,11 +311,10 @@ int main() {
             cout << "Statisctics:\n";
             cout << "------------\n";
             cout << "Total Games: "   << play_info.player_wins + play_info.computer_wins
-            << endl;
+                 << endl;
             cout << "Player Wins: "   << play_info.player_wins       << endl;
             cout << "Computer Wins: " << play_info.computer_wins     << endl;
             return 0;
         }
-    } // for
+    }
 } // main
-// If player picks even, marble in mid is odd, pick even
