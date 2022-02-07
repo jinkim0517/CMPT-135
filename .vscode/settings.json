@@ -4,6 +4,8 @@
         "istream": "cpp",
         "vector": "cpp",
         "iostream": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "iosfwd": "cpp",
+        "string_view": "cpp"
     }
 }

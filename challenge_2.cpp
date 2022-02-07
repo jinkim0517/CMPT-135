@@ -69,7 +69,6 @@ int main() {
 			// Checks if there is a 3 and pushes into vector if false
 			if (!different_check(words) && !repeated_check(words)) {
 				input_file.ordinary++;
-				cout << words << endl;
 			}
 			else if (words.size() == 1) {
 				input_file.different++;
@@ -83,7 +82,6 @@ int main() {
 			}
 			else {
 				input_file.repeated++;
-				cout << words << endl;
 			}
 		}
 		infile.close();
