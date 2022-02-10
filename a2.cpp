@@ -214,29 +214,22 @@ public:
     arr_size = arr_size - 1;
   }
 
-  int char_check(char c) {
-    int word_count = 0;
-    for (int i = 0; i < arr_size; i++) {
-      string word = arr[i];
-      if (word[0] == c) {
-        word_count++;
+void keep_all_starts_with(char c) {
+    string* temp_arr = new string[arr_capacity];
+    int n = 0;
+    for(int i = 0; i < arr_size; i++) {
+      string s = arr[i];
+      if(s[0] == c) {
+        temp_arr[n] = arr[i];
+        n++;
       }
     }
-    return word_count;
+    delete[] arr;
+    arr_size = n;
+
+    arr = temp_arr;
   }
 
-  // Removes all characters that start with the character 'c'
-  void keep_all_starts_with(char c) {
-    int num_of_words = char_check(c);
-    while (arr_size > num_of_words) {
-      for (int i = 0; i < arr_size; i++) {
-        string word = arr[i];
-        if (word[0] == c) {
-          remove(i);
-        }
-      }
-    }
-  }
 
 
   // Resets the str_vec
@@ -548,40 +541,40 @@ void set_and_get_test() {
   cout << "--------------------------------------\n";
 }
 
-// void keep_all_starts_with_test() {
-//   str_vec test(5, "");
+void keep_all_starts_with_test() {
+  str_vec test(5, "");
 
-//   test.set(0, "apple");
-//   test.set(1, "pear");
-//   test.set(2, "andrew");
-//   test.set(3, "banana");
-//   test.set(4, "baker");
+  test.set(0, "apple");
+  test.set(1, "pear");
+  test.set(2, "andrew");
+  test.set(3, "banana");
+  test.set(4, "baker");
 
-//   str_vec test1(test);
-//   str_vec test2(test);
-//   str_vec test3(test);
-//   str_vec test4(5, "");
+  str_vec test1(test);
+  str_vec test2(test);
+  str_vec test3(test);
+  str_vec test4(5, "");
 
-//   test1.keep_all_starts_with('a');
-//   assert(test1.to_string() == "{\"apple\", \"andrew\"}");
-//   assert(test1.size() == 2);
-//   cout << "Keep All That Starts With Test 1 Passed...\n";
+  test1.keep_all_starts_with('a');
+  assert(test1.to_string() == "{\"apple\", \"andrew\"}");
+  assert(test1.size() == 2);
+  cout << "Keep All That Starts With Test 1 Passed...\n";
 
-//   test2.keep_all_starts_with('f');
-//   assert(operator==(test, test2));
-//   cout << "Keep All That Starts With Test 2 Passed...\n";
+  test2.keep_all_starts_with('f');
+  assert(test2.to_string() == "{}");
+  cout << "Keep All That Starts With Test 2 Passed...\n";
 
-//   test3.keep_all_starts_with(' ');
-//   assert(operator==(test, test3));
-//   cout << "Keep All That Starts With Test 3 Passed...\n";
+  test3.keep_all_starts_with(' ');
+  assert(test3.to_string() == "{}");
+  cout << "Keep All That Starts With Test 3 Passed...\n";
 
-//   test4.keep_all_starts_with('a');
-//   assert(test4.to_string() == "{\"\", \"\", \"\", \"\", \"\"}");
-//   assert(test4.size() == 5);
-//   cout << "Keep All That Starts With Test 4 Passed!\n";
+  test4.keep_all_starts_with('a');
+  assert(test4.to_string() == "{}");
+  assert(test4.size() == 0);
+  cout << "Keep All That Starts With Test 4 Passed!\n";
 
-//   cout << "--------------------------------------\n";
-// }
+  cout << "--------------------------------------\n";
+}
 
 void clear_test() {
   str_vec test(5, "");
@@ -632,19 +625,23 @@ void operator_test() {
   str_vec test(10, "test");
   str_vec test2(test);
   str_vec test3(test);
+  str_vec test5(0, "");
   test3.set(9, "Not Test");
 
-  assert(operator==(test, test2));
+  assert(test == test2);
   cout << "Operator Test 1 Passed...\n";
 
-  assert(!operator!=(test, test2));
+  assert(!(test != test2));
   cout << "Operator Test 2 Passed...\n";
 
-  assert(!operator==(test, test3));
+  assert(!(test == test3));
   cout << "Operator Test 3 Passed...\n";
 
-  assert(operator!=(test, test3));
-  cout << "Operator Test 4 Passed!\n";
+  assert(test != test3);
+  cout << "Operator Test 4 Passed...\n";
+
+  assert(test != test5);
+  cout << "Operator Test 5 Passed!\n";
 
   cout << "--------------------------------------\n";  
 }
@@ -659,7 +656,7 @@ void str_vec_test() {
   trim_test();
   remove_test();
   set_and_get_test();
-  //keep_all_starts_with_test();
+  keep_all_starts_with_test();
   clear_test();
   squish_test();
   operator_test();
@@ -670,4 +667,14 @@ void str_vec_test() {
 int main() {
   cout << "Assignment 2 ... \n";
   str_vec_test();
+  // str_vec test(5, "");
+
+  // test.set(0, "apple");
+  // test.set(1, "pear");
+  // test.set(2, "andrew");
+  // test.set(3, "banana");
+  // test.set(4, "baker");
+
+  // test.keep_all_starts_with('f');
+  // test.print();
 }
