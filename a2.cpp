@@ -42,7 +42,6 @@ public:
   // Default constructor
   str_vec()
   : arr_capacity(10), arr_size(0), arr(new string[arr_capacity])
-
   { }
 
   // Creates a new str_vec of size n and values all of string s
@@ -294,21 +293,7 @@ bool operator==(str_vec a, str_vec b) {
 
 // Checks if two str_vecs are different
 bool operator!=(str_vec a, str_vec b) {
-  bool result = true;
-  if (a.size() == b.size()) {
-    for (int i = 0; i < a.size(); i++) {
-      if (a.get(i) == b.get(i)) {
-        result = false;
-      }
-      else {
-        return true;
-      }
-    }
-  }
-  else {
-    return true;
-  }
-  return result;
+  return !(a == b);
 }
 
 // Test Functions
@@ -667,14 +652,4 @@ void str_vec_test() {
 int main() {
   cout << "Assignment 2 ... \n";
   str_vec_test();
-  // str_vec test(5, "");
-
-  // test.set(0, "apple");
-  // test.set(1, "pear");
-  // test.set(2, "andrew");
-  // test.set(3, "banana");
-  // test.set(4, "baker");
-
-  // test.keep_all_starts_with('f');
-  // test.print();
 }
