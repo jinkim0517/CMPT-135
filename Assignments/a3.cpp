@@ -31,9 +31,6 @@
 
 using namespace std;
 
-//
-// ... put your classes here ...
-//
 class Bulleted_list : public List_base  {
   private:
   vector<string> lst;
@@ -109,10 +106,12 @@ public:
     vector<string> numbers;
     string s_result;
     
+    // Create a vector of numbers that will be the index for the list
     for (int i = start; i < start + lst.size(); i++) {
       numbers.push_back(to_string(i));
     }
 
+    // Reverse the numbers if the list is reversed
     if (reversed) {
       reverse(numbers.begin(), numbers.end());
     }
@@ -190,6 +189,7 @@ public:
   { }
 };
 
+// Bulleted class test function
 void bullet_lst_test() {
   Bulleted_list test1;
   Bulleted_list test3;
@@ -230,6 +230,7 @@ void bullet_lst_test() {
   cout << "--------------------------------\n";
 }
 
+// Numbered class test function
 void num_lst_test() {
   Numbered_list test1;
   Numbered_list test3;
