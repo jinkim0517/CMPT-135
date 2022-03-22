@@ -32,7 +32,6 @@ int main() {
 
 	while (getline(infile, row)) {
 		for (int n = 0; n < 500; n++) {
-			// cout << row[n] << endl;
 			if (row[n] == '1') {
 				columns_sums[n] += 1;
 			}
@@ -42,7 +41,7 @@ int main() {
 	for (int i = 0; i < columns_sums.size(); i++) {
 		if (columns_sums[i] >= max_value) {
 			max_value = columns_sums[i];
-			highest_column = i;
+			highest_column = i + 1;
 		}
 	}
 

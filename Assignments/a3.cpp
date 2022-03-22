@@ -38,7 +38,7 @@ class Bulleted_list : public List_base  {
 
   public:
   Bulleted_list()
-  : lst(), bullet(" - ")
+  : lst(), bullet("- ")
   { }
 
   string to_str() const{
@@ -50,6 +50,9 @@ class Bulleted_list : public List_base  {
   }
 
   string get(int i) const {
+    if (i < 0 || i >= lst.size()) {
+      cmpt::error("Inputted index is out of bounds\n");
+    }
     return lst[i];
   }
 
@@ -140,6 +143,9 @@ public:
   }
 
   string get(int i) const{
+    if (i < 0 || i >= lst.size()) {
+      cmpt::error("Inputted index is out of bounds\n");
+    }
     return lst[i];
   }
 
@@ -201,19 +207,19 @@ void bullet_lst_test() {
   test1.add_to_end("wassup");
   test1.add_to_start("yo!");
 
-  assert(test1.to_str() == " - yo!\n - hey\n - hi\n - hello\n - wassup\n");
+  assert(test1.to_str() == "- yo!\n- hey\n- hi\n- hello\n- wassup\n");
   cout << "Bulleted List Test 1 Passed...\n";
 
   test1.reverse_order();
 
-  assert(test1.to_str() == " - wassup\n - hello\n - hi\n - hey\n - yo!\n");
+  assert(test1.to_str() == "- wassup\n- hello\n- hi\n- hey\n- yo!\n");
   cout << "Bulleted List Test 2 Passed...\n";
 
   for (int i = 0; i < 5; i++) {
     test3.add_to_end("");
   }
 
-  assert(test3.to_str() == " - \n - \n - \n - \n - \n");
+  assert(test3.to_str() == "- \n- \n- \n- \n- \n");
   cout << "Bulleted List Test 3 Passed...\n";
 
   test4.add_to_end("apple");
@@ -275,4 +281,6 @@ void num_lst_test() {
 int main() {
   bullet_lst_test();
   num_lst_test();
+
+  return 0;
 }
