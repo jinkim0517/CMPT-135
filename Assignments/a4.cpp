@@ -59,7 +59,7 @@ int count_strange(int n) {
         return count;
     }
     else {
-        // If even, change to odd
+        // If even, change to odd.
         if (n % 2 == 0) {
             n--;
 			}
@@ -67,7 +67,7 @@ int count_strange(int n) {
 			if (!(n % 5 == 0)) {
             	count++;
 			}
-            // If odd, keep odd
+            // If odd, keep odd.
 			n -= 2;
         }
 		count += count_strange(n);
@@ -93,7 +93,7 @@ bool all_sfu(const string& s) {
     if (s.size() == 0) {
         return true;
     }
-    if (s[0] == 's' || s[0] == 'f' ||s[0] == 'u') {
+    else if (s[0] == 's' || s[0] == 'f' ||s[0] == 'u') {
         result = true;
     }
     if (!result) {
@@ -136,7 +136,7 @@ bool is_int(const string& s) {
     }
 
     // Checks next character in the string when size is 2 instead of checking first character when
-    // size is 0 (returns false)
+    // size is 0 (returns false).
     if (s.size() == 2) {
         if ((s[1] == '-' || s[1] == '0' || s[1] == '1' ||s[1] == '2' || s[1] == '3' || s[1] == '4'
         || s[1] == '5' || s[1] == '6' ||s[1] == '7' || s[1] == '8' || s[1] == '9') && result) {
@@ -169,14 +169,19 @@ void is_int_test() {
 string strip(const string& s) {
     string temp = s;
 	bool change = false;
+
+    // Checks first element, and removes it if == " ".
     if (temp[0] == ' ') {
         temp = temp.substr(1);
 		change = true;
     }
+
+    // Checks last element, and removes it if == " ".
 	if (temp[temp.size() - 1] == ' ') {
         temp = temp.substr(0, temp.size() - 1);
 		change = true;
     }
+
 	if (change) {
     	return strip(temp);
 	}
@@ -267,6 +272,7 @@ vector<int> max_vec(const vector<int>& a, const vector<int>& b) {
     	vector<int> temp_b = b;
 		temp_a.erase(temp_a.begin());
 	    temp_b.erase(temp_b.begin());
+
 		result = max_vec(temp_a, temp_b);
 	    result.insert(result.begin(), max);
 	}
@@ -363,6 +369,8 @@ vector<string> zip(const string& s, const string& t) {
     else {
 		string temp_s = s;
 		string temp_t = t;
+
+        // Add first characters to sum, then remove them.
         string sum = temp_s.substr(0, 1) + temp_t.substr(0, 1);
 		result = zip(temp_s.substr(1), temp_t.substr(1));
 		result.insert(result.begin(), sum);
