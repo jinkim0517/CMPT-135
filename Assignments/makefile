@@ -35,17 +35,20 @@
 #   -g puts debugging info into the executables (makes them larger)
 CPPFLAGS = -std=c++17 -Wall -Wextra -Werror -Wfatal-errors -Wno-sign-compare -Wnon-virtual-dtor -g
 
-a4_main_test: a4.o a4_main.o cmpt_trace.o
-	g++ -o a4_main_test a4.o a4_main.o cmpt_trace.o
+database_main_test: database.o database_main.o songs.o menu.o
+	g++ database.o database_main.o songs.o menu.o -o database_main_test
 
-a4:
-	g++ -c $(CPPFLAGS) a4.cpp
+database.o: database.cpp
+	g++ -c $(CPPFLAGS) database.cpp
 
-a4_main:
-	g++ -c $(CPPFLAGS) a4_main.cpp
+database_main.o: database_main.cpp
+	g++ -c $(CPPFLAGS) database_main.cpp
 
-cmpt_trace:
-	g++ -c $(CPPFLAGS) cmpt_trace.cpp
+songs.o: songs.cpp
+	g++ -c $(CPPFLAGS) songs.cpp
+	
+menu.o: menu.cpp
+	g++ -c $(CPPFLAGS) menu.cpp
 
 clean:
-	rm -f a4_main_test a4.o a4_main.o cmpt_trace.o
+	rm -f database_main_test database.o database_main.o song.o menu.o
