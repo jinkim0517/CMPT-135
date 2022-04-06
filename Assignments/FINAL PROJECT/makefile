@@ -36,7 +36,7 @@
 CPPFLAGS = -std=c++17 -Wall -Wextra -Werror -Wfatal-errors -Wno-sign-compare -Wnon-virtual-dtor -g
 
 database_main_test: database.o database_main.o songs.o menu.o
-	g++ database.o database_main.o songs.o menu.o -o database_main_test
+	g++ database.o database_main.o songs.o menu.o -o database_main_test -lncurses
 
 database.o: database.cpp
 	g++ -c $(CPPFLAGS) database.cpp

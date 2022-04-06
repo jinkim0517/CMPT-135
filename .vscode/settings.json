@@ -8,6 +8,7 @@
         "iosfwd": "cpp",
         "string_view": "cpp",
         "new": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "typeinfo": "cpp"
     }
 }

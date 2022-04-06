@@ -22,6 +22,7 @@ void Database::print_names_alpha() {
     }
 }
 
+// TO-DO: Add revere version
 void Database::print_artists_alpha() {
     vector<string> artist_list;
     for (int i = 0; i < song_list.size(); i++) {
@@ -74,6 +75,7 @@ bool Database::artist_check(string artist) {
     return true;
 }
 
+// TO-DO: Input validity checking
 void Database::add_song() {
     string name;
     string artist;
@@ -129,6 +131,7 @@ void Database::add_song() {
     song_list.push_back(new_song);
 }
 
+// TO-DO: Delete by all other variables
 void Database::delete_song() {
     string delete_name;
     cout << "What's the name of the song that you would like to delete?" << endl;
@@ -151,3 +154,5 @@ void Database::delete_song() {
 
     song_list.erase(song_list.begin() + index);
 }
+
+// TO-DO: Search for a song by date, name, artist, etc.

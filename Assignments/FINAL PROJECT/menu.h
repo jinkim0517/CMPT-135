@@ -10,5 +10,17 @@
 #include <algorithm>
 #include "songs.h"
 #include "database.h"
+#include <curses.h>
+
+class Menu {
+public:
+    void start_menu();
+
+    void add_menu();
+
+    void display_all_menu(string displayed);
+
+    void find_menu();
+};
 
 #endif
