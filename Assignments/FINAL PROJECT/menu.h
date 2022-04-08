@@ -14,13 +14,17 @@
 
 class Menu {
 public:
-    void start_menu();
+    void start_menu(Database& user_info);
 
-    void add_menu();
+    Database add_menu(Database& user_info);
 
-    void display_all_menu(string displayed);
+    Database delete_menu(Database& user_info);
 
-    void find_menu();
+    Database display_menu(Database& user_info);
+
+    void find_menu(Database user_info);
+
+    void print_songs(vector<Song>& user_songs);
 };
 
 #endif

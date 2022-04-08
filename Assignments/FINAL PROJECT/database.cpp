@@ -1,7 +1,7 @@
 #include "database.h"
 
 Database::Database()
-:song_list()
+:song_list(), init(true)
 { }
 
 bool operator<(Song song1, Song song2) {
@@ -55,27 +55,50 @@ vector<Song> Database::find_singles_only() {
     return songs;
 }
 
-vector<Song> Database::find_by_name(string name, bool reversed) {
+vector<Song> Database::find_album_only() {
     vector<Song> songs;
     for (int i = 0; i < song_list.size(); i++) {
-        if ((song_list[i].get_name() == name) || 
-        (song_list[i].get_name().find(name) != string::npos)) {
+        if (!(song_list[i].is_single())) {
             songs.push_back(song_list[i]);
         }
     }
 
     if (songs.size() == 0) {
         cout << "No matching songs.\n";
-        return songs;
-    }
-
-    sort(songs.begin(), songs.end());
-
-    if (!reversed) {
-        reverse(songs.begin(), songs.end());
     }
 
     return songs;
+}
+
+vector<Song> Database::find_by_name(string name, bool reversed) {
+    if (name != "") {
+        vector<Song> songs;
+        for (int i = 0; i < song_list.size(); i++) {
+            if ((song_list[i].get_name() == name) || 
+            (song_list[i].get_name().find(name) != string::npos)) {
+                songs.push_back(song_list[i]);
+            }
+        }
+
+        if (songs.size() == 0) {
+            cout << "No matching songs.\n";
+            return songs;
+        }
+
+        sort(songs.begin(), songs.end());
+
+        if (!reversed) {
+            reverse(songs.begin(), songs.end());
+        }
+        return songs;
+    }
+    else {
+        sort(song_list.begin(), song_list.end());
+        if (reversed) {
+            reverse(song_list.begin(), song_list.end());
+        }
+        return song_list;
+    }
 }
 
 vector<Song> Database::find_precise_duration(int duration) {
@@ -94,24 +117,33 @@ vector<Song> Database::find_precise_duration(int duration) {
 }
 
 vector<Song> Database::find_range_duration(int begin, int end, bool desc) {
-    vector<Song> songs;
-    for (int i = 0; i < song_list.size(); i++) {
-        if ((song_list[i].get_duration() >= begin) && (song_list[i].get_duration() <= end)) {
-            songs.push_back(song_list[i]);
+    if (begin != 0 && end != 0) {
+        vector<Song> songs;
+        for (int i = 0; i < song_list.size(); i++) {
+            if ((song_list[i].get_duration() >= begin) && (song_list[i].get_duration() <= end)) {
+                songs.push_back(song_list[i]);
+            }
         }
-    }
 
-    if (songs.size() == 0) {
-        cout << "No matching songs.\n";
+        if (songs.size() == 0) {
+            cout << "No matching songs.\n";
+            return songs;
+        }
+
+        sort(songs.begin(), songs.end(), compare_durations);
+
+        if (desc) {
+            reverse(songs.begin(), songs.end());
+        }
         return songs;
     }
-
-    sort(songs.begin(), songs.end(), compare_durations);
-
-    if (desc) {
-        reverse(songs.begin(), songs.end());
+    else {
+        sort(song_list.begin(), song_list.end(), compare_durations);
+        if (desc) {
+            reverse(song_list.begin(), song_list.end());
+        }
+        return song_list;
     }
-    return songs;
 }
 
 vector<Song> Database::find_precise_year(int year) {
@@ -130,48 +162,66 @@ vector<Song> Database::find_precise_year(int year) {
 }
 
 vector<Song> Database::find_range_year(int begin, int end, bool desc) {
-    vector<Song> songs;
-    for (int i = 0; i < song_list.size(); i++) {
-        if ((song_list[i].get_year() >= begin) && (song_list[i].get_year() <= end)) {
-            songs.push_back(song_list[i]);
+    if (begin != 0 && end != 0) {
+        vector<Song> songs;
+        for (int i = 0; i < song_list.size(); i++) {
+            if ((song_list[i].get_year() >= begin) && (song_list[i].get_year() <= end)) {
+                songs.push_back(song_list[i]);
+            }
         }
-    }
 
-    if (songs.size() == 0) {
-        cout << "No matching songs.\n";
+        if (songs.size() == 0) {
+            cout << "No matching songs.\n";
+            return songs;
+        }
+
+        sort(songs.begin(), songs.end(), compare_dates);
+
+        if (desc) {
+            reverse(songs.begin(), songs.end());
+        }
+
         return songs;
     }
-
-    sort(songs.begin(), songs.end(), compare_dates);
-
-    if (desc) {
-        reverse(songs.begin(), songs.end());
+    else {
+        sort(song_list.begin(), song_list.end(), compare_dates);
+        if (desc) {
+            reverse(song_list.begin(), song_list.end());
+        }
+        return song_list;
     }
-
-    return songs;
 }
 
 vector<Song> Database::find_by_artist(string artist, bool reversed) {
-    vector<Song> songs;
-    for (int i = 0; i < song_list.size(); i++) {
-        if (song_list[i].get_artist() == artist || 
-        (song_list[i].get_artist().find(artist) != string::npos)) {
-            songs.push_back(song_list[i]);
+    if (artist != "") {
+        vector<Song> songs;
+        for (int i = 0; i < song_list.size(); i++) {
+            if (song_list[i].get_artist() == artist || 
+            (song_list[i].get_artist().find(artist) != string::npos)) {
+                songs.push_back(song_list[i]);
+            }
         }
-    }
 
-    if (songs.size() == 0) {
-        cout << "No matching songs.\n";
+        if (songs.size() == 0) {
+            cout << "No matching songs.\n";
+            return songs;
+        }
+        sort(songs.begin(), songs.end(), compare_artists);
+
+        if (reversed) {
+            reverse(songs.begin(), songs.end());
+        }
         return songs;
     }
-
-    sort(songs.begin(), songs.end(), compare_artists);
-
-    if (reversed) {
-        reverse(songs.begin(), songs.end());
+    else {
+        sort(song_list.begin(), song_list.end(), compare_artists);
+        if (reversed) {
+            reverse(song_list.begin(), song_list.end());
+        }
+        return song_list;
+        return song_list;
     }
 
-    return songs;
 }
 
 bool Database::name_check(string name) {
@@ -276,8 +326,108 @@ void Database::add_song() {
     song_list.push_back(new_song);
     cin.clear();
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    cout << "Song added!\n";
 }
 
-void Database::delete_song(int index) {
-    song_list.erase(song_list.begin() + index);
+void Database::delete_song() {
+    string name;
+    cout << "What is the name of the deleted song? ";
+    cin >> name;
+
+    string artist;
+    cout << "Who made the song? ";
+    cin >> artist;
+
+    bool is_there = false;
+
+    for (int i = 0; i < song_list.size(); i++) {
+        if (song_list[i].get_name() == name && song_list[i].get_artist() == artist) {
+            song_list.erase(song_list.begin() + i);
+            is_there = true;
+        }
+    }
+
+    if (!is_there) {
+        cout << "No matching songs\n";
+    }
+    else {
+        cout << "Song deleted!\n";
+    }
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+void Database::start() {
+    if (init) {
+        ifstream infile("database.txt");
+        string word;
+
+        while(getline(infile, word)) {
+            Song new_song;
+            string name = word.substr(word.find('[') + 1, word.find(']') - word.find('[') - 1);
+
+            new_song.set_name(name);
+
+            word = word.substr(word.find(']') + 1);
+
+            string artist = word.substr(word.find('[') + 1, word.find(']') - word.find('[') - 1);
+
+            new_song.set_artist(artist);
+
+            word = word.substr(word.find(']') + 1);
+
+            string duration = word.substr(word.find('[') + 1, word.find(']') - word.find('[') - 1);
+
+            new_song.set_duration(stoi(duration));
+
+            word = word.substr(word.find(']') + 1);
+
+            string year = word.substr(word.find('[') + 1, word.find(']') - word.find('[') - 1);
+
+            new_song.set_release(stoi(year));
+
+            word = word.substr(word.find(']') + 1);
+
+            string single = word.substr(word.find('[') + 1, word.find(']') - word.find('[') - 1);
+
+            if (single == "y") {
+                new_song.set_single(true);
+            }
+            else {
+                new_song.set_single(false);
+            }
+
+            song_list.push_back(new_song);
+        }
+    }
+}
+
+void Database::end() {
+    ofstream outfile("database.txt");
+    outfile.open("database.txt", ofstream::out | ofstream::trunc);
+    if (outfile.is_open()) {
+        for (int i = 0; i < song_list.size(); i++) {
+            outfile << "[" << song_list[i].get_name() << "]";
+            outfile << "[" << song_list[i].get_artist() << "]";
+            outfile << "[" << song_list[i].get_duration() << "]";
+            outfile << "[" << song_list[i].get_year() << "]";
+
+            if (song_list[i].is_single()) {
+                outfile << "[y]\n";
+            }
+            else {
+                outfile << "[n]\n";
+            }
+        }
+        outfile.close();
+    }
+}
+
+bool Database::is_init() {
+    return init;
+}
+
+void Database::set_init(bool ans) {
+    init = ans;
 }
