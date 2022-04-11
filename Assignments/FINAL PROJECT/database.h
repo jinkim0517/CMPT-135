@@ -16,6 +16,9 @@
 class Database {
 private:
     vector<Song> song_list;
+    
+    // Checks if the program has just started or if the user has returned to main menu.
+    // Prevents multiple read-ins of the data file.
     bool init;
 public:
     Database();
@@ -37,14 +40,12 @@ public:
     vector<Song> find_range_year(int begin, int end, bool desc);
 
     vector<Song> find_by_artist(string artist, bool reversed);
-
-    bool name_check(string name);
-
-    bool artist_check(string artist);
-
-    void add_song();
     
-    void delete_song();
+    bool does_exist(string name, string artist);
+
+    void add_song(string name, string artist, int duration, int year, bool single);
+    
+    bool delete_song(string name, string artist);
 
     void start();
 

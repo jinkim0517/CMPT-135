@@ -1,13 +1,12 @@
 #include "menu.h"
 
-// TO DO:
-// Make ncurses work
-
+// Main menu (uses ncurses)
 void Menu::start_menu(Database& user_info) {
     if (user_info.is_init()) {
         user_info.start();
         user_info.set_init(false);
     }
+
     initscr();
     noecho();
     curs_set(0);
@@ -72,64 +71,145 @@ void Menu::start_menu(Database& user_info) {
     switch (highlight) {
         case 0:
             endwin();
-            user_info = add_menu(user_info);
+            add_menu(user_info);
             break;
         case 1:
             endwin();
-            user_info = delete_menu(user_info);
+            delete_menu(user_info);
             break;
         case 2:
             endwin();
-            user_info = display_menu(user_info);
+            display_menu(user_info);
             break;
         case 3:
             endwin();
             find_menu(user_info);
             break;
         case 4:
-            wclear(menuwin);
-            mvwprintw(menuwin,  0, 0, "Goodbye!");
+            user_info.end();
+            endwin();
+            break;
     }
-    
-    getch();
-    endwin();
 }
 
-
-Database Menu::add_menu(Database& user_info) {
+void Menu::add_menu(Database& user_info) {
     system("clear");
-    user_info.add_song();
+
+    string name;
+    string artist;
+    int duration;
+    int year;
+    char single;
+
+    cout << "What's the name of the song?" << endl;
+    getline(cin, name);
+
+    cout << "Who made the song?" << endl;
+    getline(cin, artist);
+
+    while (user_info.does_exist(name, artist)) {
+        cout << "This song has already been added! Please enter a different song.\n";
+        cout << "What's the name of the song?" << endl;
+        getline(cin, name);
+
+        cout << "Who made the song?" << endl;
+        getline(cin, artist);
+    }
+
+    cout << "How long is the song? (Please give in seconds)" << endl;
+
+    while (!(cin >> duration)) {
+		cout << "Please give a valid duration in seconds.\n";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+    cout << "What year was it released?" << endl;
+
+    while (!(cin >> year)) {
+		cout << "Please give a valid year.\n";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+    cout << "Is it a single? (y/n)" << endl;
+
+    while (!(cin >> single)) {
+        cout << "Please give a valid answer.\n";
+        cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    if (single == 'y') {
+        user_info.add_song(name, artist, duration, year, true);
+    }
+    else if (single == 'n') {
+        user_info.add_song(name, artist, duration, year, true);
+    }
+    else {
+        while (single != 'y' && single != 'n') {
+            cout << "Is it a single? (y/n)" << endl;
+            cin >> single;
+
+            if (single == 'y') {
+                user_info.add_song(name, artist, duration, year, true);
+            }
+            else if (single == 'n') {
+                user_info.add_song(name, artist, duration, year, true);
+            }
+        }
+    }
+
+    cout << "Song added!\n";
 
     char main;
     cout << "Would you like to return to the main menu? (y)\n";
     cin >> main;
 
     if (main == 'y' || main == 'Y') {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         start_menu(user_info);
     }
     else {
         cout << "Goodbye\n";
         user_info.end();
     }
-    return user_info;
 }
 
-Database Menu::delete_menu(Database& user_info) {
+void Menu::delete_menu(Database& user_info) {
     system("clear");
-    user_info.delete_song();
+    string name;
+
+    cout << "What is the name of the deleted song? ";
+    getline(cin, name);
+
+
+    string artist;
+
+    cout << "Who made the song? ";
+    getline(cin, artist);
+
+    if (user_info.delete_song(name, artist)) {
+        cout << "Song deleted!\n";
+    }
+    else {
+        cout << "No matching songs\n";
+    }
 
     char main;
     cout << "Would you like to return to the main menu? (y)\n";
     cin >> main;
 
     if (main == 'y' || main == 'Y') {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         start_menu(user_info);
     }
     else {
         cout << "Goodbye\n";
         user_info.end();
     }
-    return user_info;
 }
 
 void Menu::find_menu(Database user_info) {
@@ -143,7 +223,7 @@ void Menu::find_menu(Database user_info) {
     cout << "(D) - By Release Year\n";
     cout << "(E) - By Single or Album Releases?\n";
     cout << endl;
-    cout << "(F) - Return to lobby\n";
+    cout << "(F) - Return to main menu\n";
 
     char ans;
 
@@ -162,39 +242,105 @@ void Menu::find_menu(Database user_info) {
     if (ans == 'a' || ans == 'A') {
         string name;
         cout << "Name of Song: ";
-        cin >> name;
+        cin.ignore();
+        getline(cin, name);
         cout << endl;
 
         vector<Song> songs = user_info.find_by_name(name, true);
         print_songs(songs);
-
-        songs.clear();
     }
     else if (ans == 'b' || ans == 'B') {
         string artist;
         cout << "Name of Artist: ";
-        cin >> artist;
+        cin.ignore();
+
+        getline(cin, artist);
         vector<Song> songs = user_info.find_by_artist(artist, true);
         print_songs(songs);
-        songs.clear();
     }
     else if (ans == 'c' || ans == 'C') {
-        int duration;
-        cout << "Song Length (in seconds): ";
-        cin >> duration;
-        cout << endl;
-        vector<Song> songs = user_info.find_precise_duration(duration);
-        print_songs(songs);
-        songs.clear();
+        char r_or_p;
+        cout << "Would you like to search by a range or precise duration? (r/p)\n";
+        cin >> r_or_p;
+
+        while (r_or_p != 'r' && r_or_p != 'p') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\nPlease enter a valid answer.\n";
+            cout << "Would you like to search by a range or precise duration? (r/p)\n";
+            cin >> r_or_p;
+        }
+
+        if (r_or_p == 'p') {
+            int duration;
+            cout << "Song Duration: ";
+            
+            while (!(cin >> duration)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "\nPlease enter a valid value.\n";
+            }
+
+            cout << endl;
+            vector<Song> songs = user_info.find_precise_duration(duration);
+            print_songs(songs);
+        }
+        else if (r_or_p == 'r') {
+            int low = 0;
+            int high = 0;
+            cout << "Please enter the lower bound: ";
+            cin >> low;
+            cout << endl;
+
+            cout << "Please enter the upper bound: ";
+            cin >> high;
+            cout << endl;
+
+            vector<Song> songs = user_info.find_range_duration(low, high, true);
+            print_songs(songs);
+        }
     }
     else if (ans == 'd' || ans == 'D') {
-        int year;
-        cout << "Year of Release: ";
-        cin >> year;
-        cout << endl;
-        vector<Song> songs = user_info.find_precise_year(year);
-        print_songs(songs);
-        songs.clear();
+        char r_or_p;
+        cout << "Would you like to search by a range or precise year? (r/p)\n";
+        cin >> r_or_p;
+
+        while (r_or_p != 'r' && r_or_p != 'p') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\nPlease enter a valid answer.\n";
+            cout << "Would you like to search by a range or precise year? (r/p)\n";
+            cin >> r_or_p;
+        }
+
+        if (r_or_p == 'p') {
+            int year;
+            cout << "Year of Release: ";
+            
+            while (!(cin >> year)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+                cout << "\nPlease enter a valid value.\n";
+            }
+
+            cout << endl;
+            vector<Song> songs = user_info.find_precise_year(year);
+            print_songs(songs);
+        }
+        else if (r_or_p == 'r') {
+            int low = 0;
+            int high = 0;
+            cout << "Please enter the lower bound: ";
+            cin >> low;
+            cout << endl;
+
+            cout << "Please enter the upper bound: ";
+            cin >> high;
+            cout << endl;
+
+            vector<Song> songs = user_info.find_range_year(low, high, true);
+            print_songs(songs);
+        }
     }
     else if (ans == 'e' || ans == 'E') {
         char ans;
@@ -210,10 +356,8 @@ void Menu::find_menu(Database user_info) {
         else {
             songs = user_info.find_album_only();
         }
-
         print_songs(songs);
 
-        songs.clear();
     }
     else if (ans == 'f' || ans == 'F') {
         start_menu(user_info);
@@ -227,6 +371,8 @@ void Menu::find_menu(Database user_info) {
     cin >> main;
 
     if (main == 'y' || main == 'Y') {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         start_menu(user_info);
     }
     else {
@@ -235,8 +381,11 @@ void Menu::find_menu(Database user_info) {
     }
 }
 
-Database Menu::display_menu(Database& user_info) {
+void Menu::display_menu(Database& user_info) {
     system("clear");
+    // Variable that tracks if this method will send the user to another screen.
+    // Prevents printing "Would you like to return to the main menu" twice before exiting
+    bool sent_to_next = false;
     cout << "How would you like to display your songs?\n";
     cout << "----------------------------------------\n" << endl;
 
@@ -246,7 +395,7 @@ Database Menu::display_menu(Database& user_info) {
     cout << "(D) - Sorted by Release Year\n";
     cout << "(E) - Singles or Albums Only\n";
     cout << endl;
-    cout << "(F) - Return to lobby\n";
+    cout << "(F) - Return to main menu\n";
 
     char ans;
 
@@ -269,16 +418,25 @@ Database Menu::display_menu(Database& user_info) {
 
         
         print_songs(songs);
-        songs.clear();
 
         char reverse;
-        cout << "Press 'r' to reverse the order! ";
+        cout << "Press 'r' to reverse the order, or 'y' to return to main menu! ";
         cin >> reverse;
+
+        while (reverse != 'r' && reverse != 'y') {
+            cout << "Please enter a valid answer.\n";
+            cin >> reverse;
+        }
 
         if (reverse == 'r') {
             songs = user_info.find_by_name("", true);
             print_songs(songs);
-            songs.clear();
+        }
+        else if (reverse == 'y') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            sent_to_next = true;
+            start_menu(user_info);
         }
     }
     else if (ans == 'b' || ans == 'B') {
@@ -288,17 +446,26 @@ Database Menu::display_menu(Database& user_info) {
 
         
         print_songs(songs);
-        songs.clear();
 
         char reverse;
-        cout << "Press 'r' to reverse the order! ";
+        cout << "Press 'r' to reverse the order, or 'y' to return to main menu! ";
         cin >> reverse;
+
+        while (reverse != 'r' && reverse != 'y') {
+            cout << "Please enter a valid answer.\n";
+            cin >> reverse;
+        }
 
         if (reverse == 'r') {
             system("clear");
             songs = user_info.find_by_artist("", true);
             print_songs(songs);
-            songs.clear();
+        }
+        else if (reverse == 'y') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            sent_to_next = true;
+            start_menu(user_info);
         }
     }
     else if (ans == 'c' || ans == 'C') {
@@ -307,20 +474,29 @@ Database Menu::display_menu(Database& user_info) {
         songs = user_info.find_range_duration(0, 0, false);
 
         print_songs(songs);
-        songs.clear();
 
         char reverse;
-        cout << "Press 'r' to reverse the order! ";
+        cout << "Press 'r' to reverse the order, or 'y' to return to main menu! ";
         cin >> reverse;
+
+        while (reverse != 'r' && reverse != 'y') {
+            cout << "Please enter a valid answer.\n";
+            cin >> reverse;
+        }
         
         if (reverse == 'r') {
             songs = user_info.find_range_duration(0, 0, true);
             print_songs(songs);
-            songs.clear();
         }
-        
-        print_songs(songs);
-        songs.clear();
+        else if (reverse == 'y') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            sent_to_next = true;
+            start_menu(user_info);
+        }
+        else {
+            print_songs(songs);
+        }
     }
     else if (ans == 'd' || ans == 'D') {
         vector<Song> songs;
@@ -328,16 +504,25 @@ Database Menu::display_menu(Database& user_info) {
         songs = user_info.find_range_year(0, 0, false);
 
         print_songs(songs);
-        songs.clear();
 
         char reverse;
-        cout << "Press 'r' to reverse the order! ";
+        cout << "Press 'r' to reverse the order, or 'y' to return to main menu! ";
         cin >> reverse;
+
+        while (reverse != 'r' && reverse != 'y') {
+            cout << "Please enter a valid answer.\n";
+            cin >> reverse;
+        }
 
         if (reverse == 'r') {
             songs = user_info.find_range_year(0, 0, true);
             print_songs(songs);
-            songs.clear();
+        }
+        else if (reverse == 'y') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            sent_to_next = true;
+            start_menu(user_info);
         }
     
     }
@@ -347,41 +532,55 @@ Database Menu::display_menu(Database& user_info) {
         songs = user_info.find_singles_only();
 
         print_songs(songs);
-        songs.clear();
 
         char ans;
-        cout << "Press 'r' to show only album releases! ";
+        cout << "Press 'r' to show only album releases, or 'y' to return to main menu! ";
         cin >> ans;
         cout << endl;
+
+        while (ans != 'r' && ans != 'y') {
+            cout << "Please enter a valid answer.\n";
+            cin >> ans;
+        }
         
         if (ans == 'r') {
             songs = user_info.find_album_only();
             print_songs(songs);
-            songs.clear();
+        }
+        else if (ans == 'y') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            sent_to_next = true;
+            start_menu(user_info);
         }
     }
     else if (ans == 'f' || ans == 'F') {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         start_menu(user_info);
-        return user_info;
     }
     else {
         cout << "ERROR\n";
     }
 
-    char main;
-    cout << "Would you like to return to the main menu? (y)\n";
-    cin >> main;
+    if (!sent_to_next) {
+        char main;
+        cout << "Would you like to return to the main menu? (y)\n";
+        cin >> main;
 
-    if (main == 'y' || main == 'Y') {
-        start_menu(user_info);
+        if (main == 'y' || main == 'Y') {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            start_menu(user_info);
+        }
+        else {
+            cout << "Goodbye\n";
+            user_info.end();
+        }
     }
-    else {
-        cout << "Goodbye\n";
-        user_info.end();
-    }
-    return user_info;
 }
 
+// Prints all songs within a given vector
 void Menu::print_songs(vector<Song>& user_songs) {
     if (user_songs.size() != 0) {
         for (int i = 0; i < user_songs.size(); i++) {
