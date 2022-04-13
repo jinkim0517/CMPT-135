@@ -2,8 +2,6 @@
 #define DATABASE_H
 
 #include "songs.h"
-#include "cmpt_error.h"
-#include "cmpt_trace.h"
 #include "curses.h"
 #include <iostream>
 #include <string>
@@ -40,7 +38,7 @@ public:
     vector<Song> find_range_year(int begin, int end, bool desc);
 
     vector<Song> find_by_artist(string artist, bool reversed);
-    
+
     bool does_exist(string name, string artist);
 
     void add_song(string name, string artist, int duration, int year, bool single);
